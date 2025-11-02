@@ -1,5 +1,10 @@
-from django.contrib import admin
+# Django Admin Setup
 
+## 1. Registered Book model
+
+Edited `bookshelf/admin.py`:
+```python
+from django.contrib import admin
 from .models import Book
 
 class BookAdmin(admin.ModelAdmin):
