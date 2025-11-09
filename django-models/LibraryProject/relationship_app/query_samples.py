@@ -18,15 +18,20 @@ def books_in_library(library_name):
     return list(library.books.all())
 
 def librarian_for_library(library_name):
-    """Retrieve the librarian for a library by name."""
+    """Retrieve the librarian for a library using Librarian.objects.get(library=...)."""
     try:
         library = Library.objects.get(name=library_name)
     except Library.DoesNotExist:
         return None
-    return getattr(library, 'librarian', None)
+
+    try:
+        librarian = Librarian.objects.get(library=library)
+        return librarian
+    except Librarian.DoesNotExist:
+        return None
 
 def run_all(sample_author='George Orwell', sample_library='Central Library'):
-    """تشغيل كل الاستعلامات كتجربة."""
+    """Run all queries as samples."""
     print('\n--- Running sample queries ---')
 
     print(f"\nBooks by author '{sample_author}':")
