@@ -39,3 +39,16 @@ class LibraryDetailView(DetailView):
 
         context['books'] = self.object.books.all()
         return context
+# أضف هذا في relationship_app/views.py
+
+from django.http import HttpResponse
+
+def list_books_plain(request):
+    """
+    بديل نصي بسيط لقائمة الكتب — يُستخدم إذا كان urls.py يشير إليه.
+    يعرض عناوين الكتب مع أسماء المؤلفين مفصولة بأسطر <br>.
+    """
+    books = Book.objects.all()
+    lines = [f"{b.title} by {b.author.name}" for b in books]
+    # نستخدم content_type='text/html' عشان <br> يظهر في المتصفح
+    return HttpResponse('<br>'.join(lines), content_type='text/html')
