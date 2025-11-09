@@ -3,18 +3,26 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.views.generic import DetailView
 
-from .models import Book, Library
+from .models import Library
+from .models import Book
 
+
+# ---------------------------
+# Function-based View
+# ---------------------------
 def list_books(request):
     """
     Function-based view that lists all books stored in the database.
     Displays each book title and its author.
     """
+
     books = Book.objects.all()
     return render(request, 'relationship_app/list_books.html', {'books': books})
 
 
-
+# ---------------------------
+# Class-based View
+# ---------------------------
 class LibraryDetailView(DetailView):
     """
     Class-based view showing details for a specific library and its books.
