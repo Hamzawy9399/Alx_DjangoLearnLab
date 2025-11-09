@@ -8,9 +8,6 @@ from django.db.models.signals import post_save
 User = get_user_model()
 
 
-# ============================================================
-# 1️⃣ Author Model
-# ============================================================
 class Author(models.Model):
     name = models.CharField(max_length=255)
 
@@ -18,9 +15,6 @@ class Author(models.Model):
         return self.name
 
 
-# ============================================================
-# 2️⃣ Book Model
-# ============================================================
 class Book(models.Model):
     title = models.CharField(max_length=255)
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
@@ -29,22 +23,23 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        # Custom permissions as requested
+        permissions = (
+            ('can_add_book', 'Can add book'),
+            ('can_change_book', 'Can change book'),
+            ('can_delete_book', 'Can delete book'),
+        )
 
-# ============================================================
-# 3️⃣ Library Model
-# ============================================================
+
 class Library(models.Model):
     name = models.CharField(max_length=255)
-    # ✅ نستخدم موديل وسيط مخصص لحل خطأ E336
     books = models.ManyToManyField(Book, through='LibraryBooks', related_name='libraries', blank=True)
 
     def __str__(self):
         return self.name
 
 
-# ============================================================
-# 4️⃣ LibraryBooks (through model)
-# ============================================================
 class LibraryBooks(models.Model):
     library = models.ForeignKey(Library, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
@@ -59,9 +54,6 @@ class LibraryBooks(models.Model):
         return f"{self.library.name} — {self.book.title}"
 
 
-# ============================================================
-# 5️⃣ Librarian Model
-# ============================================================
 class Librarian(models.Model):
     name = models.CharField(max_length=255)
     library = models.OneToOneField(Library, on_delete=models.CASCADE, related_name='librarian')
@@ -70,9 +62,6 @@ class Librarian(models.Model):
         return f"{self.name} ({self.library.name})"
 
 
-# ============================================================
-# 6️⃣ UserProfile Model — Role-based extension of User
-# ============================================================
 class UserProfile(models.Model):
     ROLE_ADMIN = 'Admin'
     ROLE_LIBRARIAN = 'Librarian'
@@ -90,9 +79,6 @@ class UserProfile(models.Model):
         return f"{self.user.username} - {self.role}"
 
 
-# ============================================================
-# 7️⃣ Signal to auto-create UserProfile after User creation
-# ============================================================
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
