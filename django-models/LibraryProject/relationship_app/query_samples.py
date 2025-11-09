@@ -1,21 +1,13 @@
 # relationship_app/query_samples.py
-import django
-from django.core.exceptions import ObjectDoesNotExist
-
-try:
-    django.setup()
-except Exception:
-    pass
-
 from .models import Author, Book, Library, Librarian
 
 def books_by_author(author_name):
-    """Query all books by a specific author name."""
+    """Query all books by a specific author using filter()."""
     try:
         author = Author.objects.get(name=author_name)
     except Author.DoesNotExist:
         return []
-    return list(author.books.all())
+    return list(Book.objects.filter(author=author))
 
 def books_in_library(library_name):
     """List all books in a library by library name."""
@@ -23,7 +15,6 @@ def books_in_library(library_name):
         library = Library.objects.get(name=library_name)
     except Library.DoesNotExist:
         return []
-    # library.books هو ManyToMany
     return list(library.books.all())
 
 def librarian_for_library(library_name):
@@ -35,21 +26,18 @@ def librarian_for_library(library_name):
     return getattr(library, 'librarian', None)
 
 def run_all(sample_author='George Orwell', sample_library='Central Library'):
-    print('\\n--- Running sample queries ---')
-    print(f"Books by author '{sample_author}':")
-    books = books_by_author(sample_author)
-    if not books:
-        print("  (no books found)")
-    for b in books:
-        print(' -', b.title)
+    """تشغيل كل الاستعلامات كتجربة."""
+    print('\n--- Running sample queries ---')
 
-    print(f"\\nBooks in library '{sample_library}':")
-    books = books_in_library(sample_library)
-    if not books:
-        print("  (no books found)")
-    for b in books:
-        print(' -', b.title)
+    print(f"\nBooks by author '{sample_author}':")
+    for book in books_by_author(sample_author):
+        print(' -', book.title)
 
-    lib_librarian = librarian_for_library(sample_library)
-    print(f"\\nLibrarian for '{sample_library}': {lib_librarian}")
-    print('--- done ---\\n')
+    print(f"\nBooks in library '{sample_library}':")
+    for book in books_in_library(sample_library):
+        print(' -', book.title)
+
+    librarian = librarian_for_library(sample_library)
+    print(f"\nLibrarian for '{sample_library}': {librarian}")
+
+    print('\n--- done ---')
