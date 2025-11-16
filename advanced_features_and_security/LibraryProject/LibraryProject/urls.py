@@ -1,12 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings
-from django.conf.urls.static import static
+from django.urls import path
+from . import views
+
+app_name = 'bookshelf'
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    # path('', include('...')),  # مسارات مشروعك الأخرى
+    path('', views.book_list, name='book_list'),
+    path('create/', views.book_create, name='book_create'),
+    path('edit/<int:pk>/', views.book_edit, name='book_edit'),
+    path('delete/<int:pk>/', views.book_delete, name='book_delete'),
 ]
-
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
