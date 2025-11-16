@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import permission_required
 from django.views.decorators.http import require_http_methods
 from django.utils.http import url_has_allowed_host_and_scheme
 from .models import Book
-from .forms import BookForm, ExampleForm
+from .forms import BookForm
+from .forms import ExampleForm
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def book_list(request):
