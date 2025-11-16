@@ -1,10 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import permission_required, login_required
+from django.contrib.auth.decorators import permission_required
 from django.views.decorators.http import require_http_methods
 from django.utils.http import url_has_allowed_host_and_scheme
-from django.conf import settings
 from .models import Book
-from .forms import BookForm
+from .forms import BookForm, ExampleForm
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def book_list(request):
@@ -54,3 +53,13 @@ def book_delete(request, pk):
         book.delete()
         return redirect('bookshelf:book_list')
     return render(request, 'bookshelf/book_confirm_delete.html', {'book': book})
+
+@require_http_methods(["GET", "POST"])
+def example_form_view(request):
+    if request.method == 'POST':
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            return redirect('bookshelf:book_list')
+    else:
+        form = ExampleForm()
+    return render(request, 'bookshelf/form_example.html', {'form': form, 'action': 'example'})
