@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{% if action == 'create' %}Create Book{% else %}Edit Book{% endif %}</h1>
+<form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div>
+        {{ form.title.label_tag }} {{ form.title }}
+        {{ form.title.errors }}
+    </div>
+    <div>
+        {{ form.author.label_tag }} {{ form.author }}
+        {{ form.author.errors }}
+    </div>
+    <div>
+        {{ form.publication_year.label_tag }} {{ form.publication_year }}
+        {{ form.publication_year.errors }}
+    </div>
+    <div>
+        <button type="submit">Save</button>
+    </div>
+</form>
+{% endblock %}

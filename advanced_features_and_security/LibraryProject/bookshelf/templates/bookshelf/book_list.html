@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Books</h1>
+<form method="get" action="{% url 'bookshelf:book_list' %}">
+    <input type="search" name="q" placeholder="Search title" value="{{ query|default_if_none:'' }}">
+    <button type="submit">Search</button>
+</form>
+{% if perms.bookshelf.can_create %}
+    <p><a href="{% url 'bookshelf:book_create' %}">Create new book</a></p>
+{% endif %}
+<ul>
+    {% for book in books %}
+        <li>
+            {{ book.title }} by {{ book.author }} ({{ book.publication_year }})
+            {% if perms.bookshelf.can_edit %}
+                <a href="{% url 'bookshelf:book_edit' book.pk %}">Edit</a>
+            {% endif %}
+            {% if perms.bookshelf.can_delete %}
+                <a href="{% url 'bookshelf:book_delete' book.pk %}">Delete</a>
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>No books found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

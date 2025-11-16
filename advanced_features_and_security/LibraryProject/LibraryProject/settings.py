@@ -4,9 +4,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-$iebj=omv_%si&(3^m#85ltl^+yg%hjr(6xgq17%y87sdth!+f'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'yourdomain.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -30,6 +30,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'bookshelf.middleware.SecurityHeadersMiddleware',
 ]
 
 ROOT_URLCONF = 'LibraryProject.urls'
@@ -82,7 +83,6 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -95,3 +95,29 @@ MEDIA_ROOT = BASE_DIR / 'media'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
+
+
+SECURE_SSL_REDIRECT = True
+
+
+SECURE_HSTS_SECONDS = 31536000
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+
+SECURE_BROWSER_XSS_FILTER = True
+
+
+X_FRAME_OPTIONS = 'DENY'
+
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
