@@ -119,6 +119,7 @@ X_FRAME_OPTIONS = 'DENY'
 # يجب تعريف هذا حتى يعتبر Django الطلب مؤمناً. تأكد من ضبط البروكسي لتمرير العنوان.
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+
 # عدد مرات تجربة إعادة التوجيه عند استخدام SECURE_SSL_REDIRECT في الحالات الخاصة
 # (يمكن تركه افتراضيًا؛ لا حاجة لتعديله عادة)
 # SECURE_REFERRER_POLICY = 'same-origin'  # مثال إن رغبت بتقييد الريفيرر
