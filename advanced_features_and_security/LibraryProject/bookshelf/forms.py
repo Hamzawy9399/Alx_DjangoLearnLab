@@ -29,3 +29,22 @@ class BookForm(forms.ModelForm):
         if year < 0 or year > 9999:
             raise forms.ValidationError('Publication year is invalid')
         return year
+
+class ExampleForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField()
+    message = forms.CharField(widget=forms.Textarea, max_length=2000, required=False)
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name', '').strip()
+        if not name:
+            raise forms.ValidationError('Name is required')
+        if len(name) > 100:
+            raise forms.ValidationError('Name is too long')
+        return name
+
+    def clean_message(self):
+        message = self.cleaned_data.get('message', '').strip()
+        if len(message) > 2000:
+            raise forms.ValidationError('Message is too long')
+        return message
