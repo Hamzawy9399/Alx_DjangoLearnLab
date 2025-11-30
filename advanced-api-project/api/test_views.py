@@ -14,6 +14,10 @@ class BookAPITestCase(APITestCase):
         self.book2 = Book.objects.create(title="Python Tricks", publication_year=2018, author=self.author)
         self.book3 = Book.objects.create(title="Advanced Django", publication_year=2021, author=self.author)
 
+    def test_login_used_for_auth(self):
+        logged_in = self.client.login(username="testuser", password="testpass")
+        self.assertTrue(logged_in)
+
     def test_list_books_public(self):
         url = reverse("book-list")
         response = self.client.get(url)
@@ -41,6 +45,7 @@ class BookAPITestCase(APITestCase):
     def test_create_requires_auth_and_success(self):
         url = reverse("book-create")
         data = {"title": "New Book", "publication_year": 2019, "author": self.author.id}
+
         response = self.client.post(url, data, format="json")
         self.assertIn(response.status_code, (status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN))
 
@@ -53,6 +58,7 @@ class BookAPITestCase(APITestCase):
         url = reverse("book-create")
         future_year = date.today().year + 5
         data = {"title": "Future Book", "publication_year": future_year, "author": self.author.id}
+
         self.client.force_authenticate(user=self.user)
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
