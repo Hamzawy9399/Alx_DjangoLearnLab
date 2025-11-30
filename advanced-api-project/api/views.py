@@ -2,6 +2,7 @@ from rest_framework import generics, filters, status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django_filters import rest_framework
 from .models import Book
 from .serializers import BookSerializer
 from django.shortcuts import get_object_or_404
@@ -10,10 +11,10 @@ class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter, generics.GenericAPIView.filter_backends.__get__(object, object.__class__)]
+    filter_backends = [rest_framework.DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_fields = ["title", "author__name", "publication_year"]
     search_fields = ["title", "author__name"]
     ordering_fields = ["publication_year", "title"]
-    filterset_fields = ["title", "author__name", "publication_year"]
 
 class BookDetailView(generics.RetrieveAPIView):
     queryset = Book.objects.all()
@@ -44,7 +45,7 @@ class BookDeleteView(generics.DestroyAPIView):
 class BookUpdateNoPKView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def patch(self, request, *args, **kwargs):
+    def patch(self, request):
         pk = request.data.get("pk") or request.query_params.get("pk")
         if not pk:
             return Response({"detail": "pk is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -54,7 +55,7 @@ class BookUpdateNoPKView(APIView):
         serializer.save()
         return Response(serializer.data)
 
-    def put(self, request, *args, **kwargs):
+    def put(self, request):
         pk = request.data.get("pk") or request.query_params.get("pk")
         if not pk:
             return Response({"detail": "pk is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -67,7 +68,7 @@ class BookUpdateNoPKView(APIView):
 class BookDeleteNoPKView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request):
         pk = request.data.get("pk") or request.query_params.get("pk")
         if not pk:
             return Response({"detail": "pk is required"}, status=status.HTTP_400_BAD_REQUEST)
@@ -75,7 +76,7 @@ class BookDeleteNoPKView(APIView):
         book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         pk = request.data.get("pk") or request.query_params.get("pk")
         if not pk:
             return Response({"detail": "pk is required"}, status=status.HTTP_400_BAD_REQUEST)
