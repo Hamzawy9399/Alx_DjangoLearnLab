@@ -1,9 +1,9 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/register.css' %}">
 {% extends 'blog/base.html' %}
 {% block title %}Register{% endblock %}
 {% block content %}
-<section class="container">
+<link rel="stylesheet" href="{% static 'css/register.css' %}">
+<section style="max-width:720px;margin:2rem auto;padding:1.5rem;background:#fff;border-radius:8px;">
     <h2>Register</h2>
     <form method="post">
         {% csrf_token %}

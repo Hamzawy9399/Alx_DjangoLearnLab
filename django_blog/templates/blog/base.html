@@ -10,7 +10,7 @@
 <body>
     <header>
         <div>
-            <a href="/"><img src="{% static 'images/logo.png' %}" alt="logo" class="auth-logo"></a>
+            <a href="/"><img src="{% static 'images/logo.png' %}" alt="logo" style="width:48px;height:48px;border-radius:6px;"></a>
         </div>
         <nav>
             {% if user.is_authenticated %}
@@ -24,7 +24,7 @@
     </header>
     <main>
         {% if messages %}
-            <ul class="message-list">
+            <ul>
                 {% for message in messages %}
                     <li>{{ message }}</li>
                 {% endfor %}
@@ -32,8 +32,8 @@
         {% endif %}
         {% block content %}{% endblock %}
     </main>
-    <footer class="auth-footer">
-        <p>© Django Blog</p>
+    <footer>
+        <p style="text-align:center; padding:1rem 0;">© Django Blog</p>
     </footer>
 </body>
 </html>
