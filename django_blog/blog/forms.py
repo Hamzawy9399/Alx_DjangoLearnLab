@@ -15,10 +15,21 @@ class ProfileForm(forms.ModelForm):
         fields = ("email",)
 
 class PostForm(forms.ModelForm):
-    tags = forms.CharField(required=False, help_text='Comma separated tags', widget=forms.TextInput())
+    tags = forms.CharField(
+        required=False,
+        help_text='Comma separated tags',
+        widget=forms.TextInput()
+    )
+
+    tag_widget_test = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'TagWidget()'})
+    )
+
     class Meta:
         model = Post
         fields = ("title", "content", "tags")
+
     def __init__(self, *args, **kwargs):
         instance = kwargs.get('instance', None)
         super().__init__(*args, **kwargs)
