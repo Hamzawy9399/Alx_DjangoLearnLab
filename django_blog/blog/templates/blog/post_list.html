@@ -5,8 +5,12 @@
 {% block content %}
 <section style="max-width:900px;margin:2rem auto;">
     <h2>All Posts</h2>
+    <form method="get" action="{% url 'post-list' %}">
+        <input type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+        <button type="submit">Search</button>
+    </form>
     {% if user.is_authenticated %}
-        <p><a href="{% url 'post-new' %}">Create new post</a></p>
+        <p><a href="{% url 'post-create' %}">Create new post</a></p>
     {% endif %}
     {% if posts %}
         <ul>
@@ -16,6 +20,13 @@
                         <h3><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h3>
                         <p>By {{ post.author.username }} on {{ post.published_date|date:'Y-m-d H:i' }}</p>
                         <div>{{ post.content|truncatechars:200 }}</div>
+                        {% if post.tags.all %}
+                            <p>Tags:
+                                {% for tag in post.tags.all %}
+                                    <a href="{% url 'tag-posts' tag.name %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
                     </article>
                 </li>
             {% endfor %}

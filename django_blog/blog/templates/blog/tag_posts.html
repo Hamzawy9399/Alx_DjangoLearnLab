@@ -1,0 +1,25 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/post_list.css' %}">
+{% extends 'blog/base.html' %}
+{% block title %}Posts tagged {{ tag_name }}{% endblock %}
+{% block content %}
+<section style="max-width:900px;margin:2rem auto;">
+    <h2>Posts tagged "{{ tag_name }}"</h2>
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <article>
+                        <h3><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h3>
+                        <p>By {{ post.author.username }} on {{ post.published_date|date:'Y-m-d H:i' }}</p>
+                        <div>{{ post.content|truncatechars:200 }}</div>
+                    </article>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posts found for this tag.</p>
+    {% endif %}
+    <p><a href="{% url 'post-list' %}">Back to posts</a></p>
+</section>
+{% endblock %}

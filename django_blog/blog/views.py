@@ -6,8 +6,9 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
 from .forms import CustomUserCreationForm, ProfileForm, PostForm, CommentForm
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 
 def index(request):
     posts = Post.objects.select_related('author').order_by('-published_date')[:10]
@@ -51,8 +52,16 @@ class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
-    ordering = ['-published_date']
     paginate_by = 10
+    def get_queryset(self):
+        qs = Post.objects.select_related('author').prefetch_related('tags').order_by('-published_date')
+        q = self.request.GET.get('q', '').strip()
+        tag = self.request.GET.get('tag', '').strip()
+        if q:
+            qs = qs.filter(Q(title__icontains=q) | Q(content__icontains=q) | Q(tags__name__icontains=q)).distinct()
+        if tag:
+            qs = qs.filter(tags__name__iexact=tag).distinct()
+        return qs
 
 class PostDetailView(DetailView):
     model = Post
@@ -69,7 +78,14 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     template_name = 'blog/post_form.html'
     def form_valid(self, form):
         form.instance.author = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        tags_str = form.cleaned_data.get('tags', '')
+        tag_names = [t.strip() for t in tags_str.split(',') if t.strip()]
+        form.instance.tags.clear()
+        for name in tag_names:
+            tag, created = Tag.objects.get_or_create(name=name)
+            form.instance.tags.add(tag)
+        return response
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
@@ -78,6 +94,15 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         post = self.get_object()
         return post.author == self.request.user
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        tags_str = form.cleaned_data.get('tags', '')
+        tag_names = [t.strip() for t in tags_str.split(',') if t.strip()]
+        self.object.tags.clear()
+        for name in tag_names:
+            tag, created = Tag.objects.get_or_create(name=name)
+            self.object.tags.add(tag)
+        return response
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
@@ -123,3 +148,16 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         comment = self.get_object()
         return comment.author == self.request.user
+
+class TagPostsView(ListView):
+    model = Post
+    template_name = 'blog/tag_posts.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+    def get_queryset(self):
+        tag_name = self.kwargs.get('tag_name')
+        return Post.objects.filter(tags__name__iexact=tag_name).select_related('author').prefetch_related('tags').order_by('-published_date')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag_name'] = self.kwargs.get('tag_name')
+        return context
