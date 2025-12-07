@@ -1,11 +1,12 @@
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/post_list.css' %}">
 {% extends 'blog/base.html' %}
-{% block title %}Posts{% endblock %}
+{% block title %}All Posts{% endblock %}
 {% block content %}
 <section style="max-width:900px;margin:2rem auto;">
     <h2>All Posts</h2>
     {% if user.is_authenticated %}
-        <p><a href="{% url 'post-create' %}">Create new post</a></p>
+        <p><a href="{% url 'post-new' %}">Create new post</a></p>
     {% endif %}
     {% if posts %}
         <ul>
