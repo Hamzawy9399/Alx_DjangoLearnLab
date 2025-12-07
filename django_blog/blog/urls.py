@@ -15,4 +15,6 @@ urlpatterns = [
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),
     path('register/', views.register, name='register'),
     path('profile/', views.profile, name='profile'),
+path('posts/<int:post_pk>/comments/new/', views.CommentCreateView.as_view(), name='comment-create'),
+
 ]
