@@ -1,9 +1,10 @@
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
 {% extends 'blog/base.html' %}
 {% block title %}Register{% endblock %}
 {% block content %}
 <section class="container">
-    <div class="auth-header">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
         <img src="{% static 'images/logo.png' %}" alt="logo" class="auth-logo">
         <h2>Register</h2>
     </div>

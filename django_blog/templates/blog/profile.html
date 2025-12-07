@@ -1,7 +1,9 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
 {% extends 'blog/base.html' %}
 {% block title %}Profile{% endblock %}
 {% block content %}
-<section>
+<section class="container">
     <h2>Your Profile</h2>
     <form method="post">
         {% csrf_token %}
