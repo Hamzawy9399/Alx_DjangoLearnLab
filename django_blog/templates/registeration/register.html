@@ -1,8 +1,12 @@
+{% load static %}
 {% extends 'blog/base.html' %}
 {% block title %}Register{% endblock %}
 {% block content %}
-<section>
-    <h2>Register</h2>
+<section class="container">
+    <div class="auth-header">
+        <img src="{% static 'images/logo.png' %}" alt="logo" class="auth-logo">
+        <h2>Register</h2>
+    </div>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
