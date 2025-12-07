@@ -1,0 +1,15 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/comment_form.css' %}">
+{% extends 'blog/base.html' %}
+{% block title %}Comment Form{% endblock %}
+{% block content %}
+<section style="max-width:720px;margin:2rem auto;padding:1.5rem;background:#fff;border-radius:8px;">
+    <h2>{% if form.instance.pk %}Edit Comment{% else %}New Comment{% endif %}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{% if form.instance.pk %}Save Changes{% else %}Post Comment{% endif %}</button>
+    </form>
+    <p><a href="{% url 'post-detail' post.pk %}">Back to post</a></p>
+</section>
+{% endblock %}
