@@ -12,6 +12,7 @@ urlpatterns = [
     path('comments/<int:pk>/edit/', views.CommentUpdateView.as_view(), name='comment-update'),
     path('comments/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='comment-delete'),
     path('tags/<str:tag_name>/', views.TagPostsView.as_view(), name='tag-posts'),
+    path('tags/<slug:tag_slug>/', views.PostByTagListView.as_view(), name='posts-by-tag'),
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),
     path('register/', views.register, name='register'),
