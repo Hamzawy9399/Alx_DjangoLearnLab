@@ -5,7 +5,7 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsOwnerOrReadOnly
 
-"viewsets.ModelViewSet"
+viewsets.ModelViewSet
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
