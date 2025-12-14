@@ -1,8 +1,11 @@
-from rest_framework import viewsets, generics, permissions
+from rest_framework import viewsets, generics, permissions, status
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
-from .models import Post, Comment
+from django.shortcuts import get_object_or_404
+from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
+from notifications.models import Notification
+from django.contrib.contenttypes.models import ContentType
 
 Post.objects.all()
 Comment.objects.all()
@@ -33,3 +36,27 @@ class FeedView(generics.GenericAPIView):
         posts = Post.objects.filter(author__in=following_users).order_by('-created_at')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)
+
+class LikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        if created:
+            Notification.objects.create(
+                recipient=post.author,
+                actor=request.user,
+                verb='liked your post',
+                target_content_type=ContentType.objects.get_for_model(Post),
+                target_object_id=post.id
+            )
+        return Response({'liked': True}, status=status.HTTP_200_OK)
+
+class UnlikePostView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, pk):
+        post = get_object_or_404(Post, pk=pk)
+        Like.objects.filter(post=post, user=request.user).delete()
+        return Response({'liked': False}, status=status.HTTP_200_OK)
