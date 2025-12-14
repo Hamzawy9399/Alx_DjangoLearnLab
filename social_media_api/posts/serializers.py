@@ -5,7 +5,7 @@ from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsOwnerOrReadOnly
 
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all().order_by('-created_at')
+    queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsOwnerOrReadOnly]
     filter_backends = [SearchFilter]
@@ -15,7 +15,7 @@ class PostViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all().order_by('-created_at')
+    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsOwnerOrReadOnly]
 
