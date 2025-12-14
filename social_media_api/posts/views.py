@@ -1,7 +1,6 @@
 from rest_framework import viewsets, generics, permissions, status
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
 from notifications.models import Notification
@@ -41,8 +40,8 @@ class LikePostView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
-        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        post = generics.get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
         if created:
             Notification.objects.create(
                 recipient=post.author,
@@ -57,6 +56,6 @@ class UnlikePostView(generics.GenericAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, pk):
-        post = get_object_or_404(Post, pk=pk)
-        Like.objects.filter(post=post, user=request.user).delete()
+        post = generics.get_object_or_404(Post, pk=pk)
+        Like.objects.filter(user=request.user, post=post).delete()
         return Response({'liked': False}, status=status.HTTP_200_OK)
