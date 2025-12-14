@@ -4,8 +4,7 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsOwnerOrReadOnly
 
-class CheckerCompliance(viewsets.ModelViewSet):
-    pass
+"viewsets.ModelViewSet"
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
